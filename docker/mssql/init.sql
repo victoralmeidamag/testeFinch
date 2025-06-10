@@ -1,0 +1,10 @@
+CREATE DATABASE imi;
+GO
+USE imi;
+GO
+CREATE TABLE contas (
+    id INT PRIMARY KEY IDENTITY(1,1),
+    nome NVARCHAR(255),
+    saldo DECIMAL(18,2)
+);
+GO

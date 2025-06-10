@@ -1,0 +1,46 @@
+services:
+  php1:
+    build: ./docker/php
+    container_name: php1
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - app-net
+
+  php2:
+    build: ./docker/php
+    container_name: php2
+    volumes:
+      - ./src:/var/www/html
+    networks:
+      - app-net
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./src:/var/www/html
+    depends_on:
+      - php1
+    networks:
+      - app-net
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "YourStrong!Pass123"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - ./docker/mssql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge
