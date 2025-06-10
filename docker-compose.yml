@@ -4,6 +4,8 @@ services:
     container_name: php1
     volumes:
       - ./src:/var/www/html
+    depends_on:
+      - sqlserver
     networks:
       - app-net
 
@@ -12,6 +14,8 @@ services:
     container_name: php2
     volumes:
       - ./src:/var/www/html
+    depends_on:
+      - sqlserver
     networks:
       - app-net
 
@@ -32,14 +36,17 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sqlserver
     environment:
-      SA_PASSWORD: "YourStrong!Pass123"
+      SA_PASSWORD: "testeFinch@1"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
-    volumes:
-      - ./docker/mssql/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app-net
+    healthcheck:
+      test: ["CMD-SHELL", "nc -z localhost 1433"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
 networks:
   app-net:

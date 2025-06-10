@@ -29,4 +29,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-CMD ["sh", "-c", "cd /var/www/html && composer dump-autoload && php -S 0.0.0.0:8000 -t /var/www/html"]
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["entrypoint.sh"]
