@@ -1,5 +1,6 @@
 <?php
 
+use App\Adapters\Controllers\StressController;
 use App\Adapters\Controllers\TransferController;
 use App\Application\UseCases\TransferUseCase;
 use App\Domain\Services\Transfer\TransferService;
@@ -14,6 +15,7 @@ function dependencies(string $class): ?callable
             $useCase = new TransferUseCase($repo, $service);
             return new TransferController($useCase);
         },
+        StressController::class => fn() => new StressController(),
         default => null
     };
 }
