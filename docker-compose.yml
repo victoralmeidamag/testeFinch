@@ -1,6 +1,8 @@
 services:
   php1:
-    build: ./docker/php
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
     container_name: php1
     volumes:
       - ./src:/var/www/html
@@ -12,7 +14,9 @@ services:
       - ./src/Config/.env
 
   php2:
-    build: ./docker/php
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
     container_name: php2
     volumes:
       - ./src:/var/www/html
@@ -47,10 +51,20 @@ services:
     networks:
       - app-net
     healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 1433"]
+      test: ["CMD-SHELL", "until /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P 'TesteFinch@123' -Q 'SELECT 1' > /dev/null; do sleep 2; done"]
       interval: 10s
       timeout: 5s
       retries: 10
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./src/public:/usr/share/nginx/html/docs
+    networks:
+      - app-net
 
 networks:
   app-net:

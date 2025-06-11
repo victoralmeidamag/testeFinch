@@ -1,0 +1,88 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Transferências Bancárias",
+    "description": "Documentação da API para operações de transferência entre contas.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/transfer": {
+      "post": {
+        "summary": "Realiza uma transferência entre contas",
+        "operationId": "transferFunds",
+        "tags": ["Transferência"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["from", "to", "amount"],
+                "properties": {
+                  "from": {
+                    "type": "integer",
+                    "example": 1,
+                    "description": "ID da conta de origem"
+                  },
+                  "to": {
+                    "type": "integer",
+                    "example": 2,
+                    "description": "ID da conta de destino"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "format": "float",
+                    "example": 100.5,
+                    "description": "Valor da transferência"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transferência realizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Transferência realizada com sucesso"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Campos obrigatórios não informados."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

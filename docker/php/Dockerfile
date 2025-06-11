@@ -15,7 +15,8 @@ RUN apt-get update && apt-get install -y \
     libc-dev \
     pkg-config \
     libssl-dev \
-    libxml2-dev
+    libxml2-dev \
+ && apt-get clean
 
 RUN curl -sSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg && \
     chmod 644 /etc/apt/keyrings/microsoft.gpg && \
@@ -31,7 +32,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["entrypoint.sh"]
