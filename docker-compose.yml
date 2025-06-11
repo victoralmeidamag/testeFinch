@@ -8,6 +8,8 @@ services:
       - sqlserver
     networks:
       - app-net
+    env_file:
+      - ./src/Config/.env
 
   php2:
     build: ./docker/php
@@ -18,6 +20,8 @@ services:
       - sqlserver
     networks:
       - app-net
+    env_file:
+      - ./src/Config/.env
 
   nginx:
     image: nginx:latest
@@ -36,7 +40,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sqlserver
     environment:
-      SA_PASSWORD: "testeFinch@1"
+      SA_PASSWORD: "TesteFinch@123"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"

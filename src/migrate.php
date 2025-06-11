@@ -1,11 +1,14 @@
 <?php
 
-$host = 'sqlserver';
-$port = '1433';
-$user = 'sa';
-$pass = 'testeFinch@1';
+require_once 'Config/env.php';
 
-// parâmetros de conexão comuns para evitar erro de SSL
+loadEnv();
+
+$host =  getenv('DB_HOST') ?: 'localhost';
+$port = getenv('DB_PORT') ?: '1433';
+$user = getenv('DB_USERNAME') ?: 'sa';
+$pass = getenv('DB_PASSWORD') ?: 'password';
+
 $dsnBase = "sqlsrv:Server=$host,$port;";
 $params = "Encrypt=false;TrustServerCertificate=true";
 
@@ -14,7 +17,6 @@ $pdo = null;
 
 while ($retries--) {
     try {
-        // Conecta ao banco master
         $pdo = new PDO("{$dsnBase}Database=master;$params", $user, $pass);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         break;

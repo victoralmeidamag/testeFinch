@@ -1,7 +1,11 @@
 <?php
 
-function loadEnv($path = __DIR__ . '/.env') {
+function loadEnv($path = null)
+{
+    $path = $path ?? __DIR__ . '/.env';
+
     if (!file_exists($path)) {
+        echo "Arquivo .env não encontrado: $path\n";
         return;
     }
 
