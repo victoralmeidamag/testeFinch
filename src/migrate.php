@@ -4,7 +4,7 @@ require_once 'Config/env.php';
 
 loadEnv();
 
-$host =  getenv('DB_HOST') ?: 'localhost';
+$host = getenv('DB_HOST') ?: 'localhost';
 $port = getenv('DB_PORT') ?: '1433';
 $user = getenv('DB_USERNAME') ?: 'sa';
 $pass = getenv('DB_PASSWORD') ?: 'password';
@@ -71,8 +71,24 @@ try {
         );
     ");
 
+    echo "Verificando se já existem contas...\n";
+
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM contas");
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ((int)$row['total'] === 0) {
+        echo "Inserindo contas iniciais...\n";
+        $pdo->exec("
+            INSERT INTO contas (nome, saldo) VALUES 
+            ('Conta Teste 1', 1000.00),
+            ('Conta teste 2', 2000.00);
+        ");
+    } else {
+        echo "Contas já existentes. Nenhuma nova conta inserida.\n";
+    }
+
     echo "Migração concluída com sucesso.\n";
 } catch (PDOException $e) {
-    echo "Erro ao criar tabelas: " . $e->getMessage() . "\n";
+    echo "Erro ao criar tabelas ou inserir dados: " . $e->getMessage() . "\n";
     exit(1);
 }
