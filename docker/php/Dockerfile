@@ -25,6 +25,8 @@ RUN curl -sSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor 
 RUN pecl install pdo_sqlsrv sqlsrv && \
     docker-php-ext-enable pdo_sqlsrv sqlsrv
 
+RUN docker-php-ext-install pcntl
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
