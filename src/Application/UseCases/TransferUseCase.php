@@ -38,7 +38,7 @@ class TransferUseCase
 
             $from = $dto->fromId === $first->id ? $first : $second;
             $to   = $dto->toId === $second->id ? $second : $first;
-                    
+            
             $this->service->execute($from, $to, $dto->amount);
 
             $this->repository->save($from);
