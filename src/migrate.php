@@ -31,13 +31,13 @@ if (!$pdo) {
     exit(1);
 }
 
-echo "Conectado ao SQL Server. Verificando/criando banco 'imi'...\n";
+echo "Conectado ao SQL Server. Verificando/criando banco 'finch'...\n";
 
 try {
     $pdo->exec("
-        IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'imi')
+        IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'finch')
         BEGIN
-            CREATE DATABASE imi;
+            CREATE DATABASE finch;
         END
     ");
 } catch (PDOException $e) {
@@ -46,29 +46,40 @@ try {
 }
 
 try {
-    $pdo = new PDO("{$dsnBase}Database=imi;$params", $user, $pass);
+    $pdo = new PDO("{$dsnBase}Database=finch;$params", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo "Erro ao conectar ao banco 'finch': " . $e->getMessage() . "\n";
+    exit(1);
+}
 
-    echo "Criando tabelas se não existirem...\n";
+echo "Criando tabelas se não existirem...\n";
 
+try {
     $pdo->exec("
         IF OBJECT_ID('contas', 'U') IS NULL
-        CREATE TABLE contas (
-            id INT PRIMARY KEY IDENTITY(1,1),
-            nome NVARCHAR(255),
-            saldo DECIMAL(18,2)
-        );
+        BEGIN
+            CREATE TABLE contas (
+                id INT PRIMARY KEY IDENTITY(1,1),
+                nome NVARCHAR(255),
+                saldo DECIMAL(18,2)
+            );
+        END
+    ");
 
+    $pdo->exec("
         IF OBJECT_ID('transacoes', 'U') IS NULL
-        CREATE TABLE transacoes (
-            id INT PRIMARY KEY IDENTITY(1,1),
-            conta_origem_id INT,
-            conta_destino_id INT,
-            valor DECIMAL(18,2),
-            data_transferencia DATETIME DEFAULT GETDATE(),
-            FOREIGN KEY (conta_origem_id) REFERENCES contas(id),
-            FOREIGN KEY (conta_destino_id) REFERENCES contas(id)
-        );
+        BEGIN
+            CREATE TABLE transacoes (
+                id INT PRIMARY KEY IDENTITY(1,1),
+                conta_origem_id INT,
+                conta_destino_id INT,
+                valor DECIMAL(18,2),
+                data_transferencia DATETIME DEFAULT GETDATE(),
+                FOREIGN KEY (conta_origem_id) REFERENCES contas(id),
+                FOREIGN KEY (conta_destino_id) REFERENCES contas(id)
+            );
+        END
     ");
 
     echo "Verificando se já existem contas...\n";
