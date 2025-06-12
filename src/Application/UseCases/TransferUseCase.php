@@ -36,8 +36,8 @@ class TransferUseCase
             $first  = $this->repository->findAndLock($firstId);
             $second = $this->repository->findAndLock($secondId);
 
-            $from = $dto->fromId === $first->id ? $first : $second;
-            $to   = $dto->toId === $second->id ? $second : $first;
+            $from = $dto->fromId === $firstId ? $first : $second;
+            $to   = $dto->toId === $secondId ? $second : $first;
             
             $this->service->execute($from, $to, $dto->amount);
 
