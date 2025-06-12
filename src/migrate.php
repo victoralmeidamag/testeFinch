@@ -1,20 +1,19 @@
 <?php
 
 require_once 'Config/env.php';
-
 loadEnv();
 
-$host = getenv('DB_HOST') ?: 'localhost';
-$port = getenv('DB_PORT') ?: '1433';
-$user = getenv('DB_USERNAME') ?: 'sa';
-$pass = getenv('DB_PASSWORD') ?: 'password';
-$dbName = getenv('DB_NAME') ?: 'finch';
+$host    = getenv('DB_HOST') ?: 'localhost';
+$port    = getenv('DB_PORT') ?: '1433';
+$user    = getenv('DB_USERNAME') ?: 'sa';
+$pass    = getenv('DB_PASSWORD') ?: 'password';
+$dbName  = getenv('DB_NAME') ?: 'finch';
 
 $dsnBase = "sqlsrv:Server=$host,$port;";
-$params = "Encrypt=false;TrustServerCertificate=true";
+$params  = "Encrypt=false;TrustServerCertificate=true";
 
 $retries = 10;
-$pdo = null;
+$pdo     = null;
 
 while ($retries--) {
     try {
@@ -32,13 +31,13 @@ if (!$pdo) {
     exit(1);
 }
 
-echo "Conectado ao SQL Server. Verificando/criando banco {$dbName}...\n";
+echo "Conectado ao SQL Server. Verificando/criando banco '$dbName'...\n";
 
 try {
     $pdo->exec("
-        IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = {$dbName})
+        IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = '$dbName')
         BEGIN
-            CREATE DATABASE{$dbName}
+            CREATE DATABASE [$dbName];
         END
     ");
 } catch (PDOException $e) {
@@ -47,10 +46,10 @@ try {
 }
 
 try {
-    $pdo = new PDO("{$dsnBase}Database{$dbName}$params", $user, $pass);
+    $pdo = new PDO("{$dsnBase}Database=$dbName;$params", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    echo "Erro ao conectar ao banco {$dbName}: " . $e->getMessage() . "\n";
+    echo "Erro ao conectar ao banco '$dbName': " . $e->getMessage() . "\n";
     exit(1);
 }
 
@@ -84,16 +83,15 @@ try {
     ");
 
     echo "Verificando se já existem contas...\n";
-
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM contas");
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $row  = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ((int)$row['total'] === 0) {
         echo "Inserindo contas iniciais...\n";
         $pdo->exec("
             INSERT INTO contas (nome, saldo) VALUES 
             ('Conta Teste 1', 1000.00),
-            ('Conta teste 2', 2000.00);
+            ('Conta Teste 2', 2000.00);
         ");
     } else {
         echo "Contas já existentes. Nenhuma nova conta inserida.\n";
