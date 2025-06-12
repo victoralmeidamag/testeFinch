@@ -8,6 +8,7 @@ $host = getenv('DB_HOST') ?: 'localhost';
 $port = getenv('DB_PORT') ?: '1433';
 $user = getenv('DB_USERNAME') ?: 'sa';
 $pass = getenv('DB_PASSWORD') ?: 'password';
+$dbName = getenv('DB_NAME') ?: 'finch';
 
 $dsnBase = "sqlsrv:Server=$host,$port;";
 $params = "Encrypt=false;TrustServerCertificate=true";
@@ -31,13 +32,13 @@ if (!$pdo) {
     exit(1);
 }
 
-echo "Conectado ao SQL Server. Verificando/criando banco 'finch'...\n";
+echo "Conectado ao SQL Server. Verificando/criando banco {$dbName}...\n";
 
 try {
     $pdo->exec("
-        IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'finch')
+        IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = {$dbName})
         BEGIN
-            CREATE DATABASE finch;
+            CREATE DATABASE{$dbName}
         END
     ");
 } catch (PDOException $e) {
@@ -46,10 +47,10 @@ try {
 }
 
 try {
-    $pdo = new PDO("{$dsnBase}Database=finch;$params", $user, $pass);
+    $pdo = new PDO("{$dsnBase}Database{$dbName}$params", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
-    echo "Erro ao conectar ao banco 'finch': " . $e->getMessage() . "\n";
+    echo "Erro ao conectar ao banco {$dbName}: " . $e->getMessage() . "\n";
     exit(1);
 }
 
