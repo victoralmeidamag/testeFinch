@@ -128,7 +128,11 @@ Rodar o comando:**
         - Foi feito um log simples para registrar o tempo em que foi efetuada as requisições.
     2. Como rodar?
         - No Postman ou Insominia ou outro aplicativo que simule requisições, rodar em uma rota GET a url "localhost/stress_test.php"
-        - Será gerado um arquivo com o log no caminho src/logs/stress_deadlock.log 
+        - Será gerado um arquivo com o log no caminho src/logs/stress_deadlock.log
+2. **Documentação da Rota**
+    1. Como acessar?
+        - Acessar o link localhost:8081
+    2. Assim que entrar, abrirá a página padrão do Swagger, localizar o campo onde ao lado tem o botão "Explorar", nesse espaço para digitar, digitar o link http://localhost:8081/docs/swagger.json
 
 ## 
 ## PROJETO DESENVOLVIDO POR VICTOR MAGALHAES PARA PROCESSO SELETIVO PARA A EMPRESA FINCH.
